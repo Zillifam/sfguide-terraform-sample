@@ -1,14 +1,23 @@
 terraform {
-  required_version = ">= 1.0.0"
-
   required_providers {
-    null = {
-      source  = "hashicorp/null"
-      version = "~> 3.0"
+    snowflake = {
+      source = "snowflakedb/snowflake"
     }
   }
 }
 
-provider "null" {}
+locals {
+  organization_name = "zapevlz"
+  account_name      = "ojb94615"
+  private_key_path  = "~/.ssh/snowflake_tf_snow_key.p8"
+}
 
-add initial terraform config
+provider "snowflake" {
+  organization_name = local.organization_name
+  account_name      = local.account_name
+  user              = "TERRAFORM_SVC"
+  role              = "SYSADMIN"
+  authenticator     = "SNOWFLAKE_JWT"
+  private_key       = file(local.private_key_path)
+}
+
